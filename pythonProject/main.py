@@ -25,7 +25,7 @@ frame_image = pygame.image.load(frame_path)
 
 # Create a Pygame window
 
-screen = pygame.display.set_mode((screen_width, screen_height))
+screen = pygame.display.set_mode((screen_width, screen_height),pygame.FULLSCREEN)
 
 fotoframe= cv2.imread("frame.png")
 fotoframe = cv2.resize(fotoframe,(camera_width+2*fotoframe_boader,camera_height+2*fotoframe_boader))
@@ -35,8 +35,8 @@ print(fotoframe.shape)
 
 def get_cam_frame(camera):
     retval, image = camera.read()
-    fotoframe[100:2260,100:3940] = image
-    #fotoframe[fotoframe_boader:(camera_height+fotoframe_boader),fotoframe_boader:(camera_width+fotoframe_boader)] = image
+    #fotoframe[100:2260,100:3940] = image
+    fotoframe[fotoframe_boader:(camera_height+fotoframe_boader),fotoframe_boader:(camera_width+fotoframe_boader)] = image
     frame = cv2.resize(fotoframe,(screen_width,screen_height))
     frame = cv2.cvtColor(frame,cv2.COLOR_RGB2BGR)
     frame = np.rot90(frame)
