@@ -4,8 +4,8 @@ import cv2
 import numpy as np
 import datetime
 
-camera_width = 3840
-camera_height = 2160
+camera_width = 1920
+camera_height = 1080
 fotoframe_boader = 100  # px
 screen_width, screen_height = 1920, 1080
 
@@ -21,8 +21,9 @@ alpha_ = fotoframe[:, :, 3]
 fotoframe = fotoframe[:, :, :3]
 alpha = ((alpha_ / 255)-1)*-1
 
+flashimage = np.ones_like(fotoframe)*200
 
-#fotoframe = np.flipud(fotoframe)
+
 
 running = True
 
@@ -37,12 +38,14 @@ while running:
     canvas = canvas + fotoframe
     canvas = cv2.resize(canvas, (screen_width, screen_height))
     cv2.imshow("frame", canvas)
-    k = cv2.waitKey(15)
+    k = cv2.waitKey(33)
     if k == 32:
         # Capture a photo
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         filename = f"captured_photo_{timestamp}.jpg"
         cv2.imwrite(filename, canvas)
+        cv2.imshow("frame", flashimage )
+        cv2.waitKey(60)
     elif k == 27:
         running = False
     #else:
