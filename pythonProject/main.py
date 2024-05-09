@@ -3,19 +3,31 @@ import time
 import cv2
 import numpy as np
 import datetime
+from pathlib import Path
+
 
 camera_width = 1920
 camera_height = 1080
 fotoframe_boader = 100  # px
 screen_width, screen_height = 1920, 1080
 imgwindow = "fotobooth"
+
+
+event_name = "weddding" #defined the name where the images are stored
+frame_name = "frame.png" #the name of the custom frame
+
+script_path = Path(__file__)/".."
+storage_path = script_path/event_name
+Path.mkdir(storage_path,exist_ok=True)
+frame_path = script_path/frame_name
+
 # Set up the camera
 camera_index = 0
 camera = cv2.VideoCapture(camera_index)
 camera.set(cv2.CAP_PROP_FRAME_WIDTH, camera_width)
 camera.set(cv2.CAP_PROP_FRAME_HEIGHT, camera_height)
 
-fotoframe = cv2.imread("frame.png", cv2.IMREAD_UNCHANGED)
+fotoframe = cv2.imread(frame_path.name, cv2.IMREAD_UNCHANGED)
 fotoframe = cv2.resize(fotoframe, (camera_width + 2 * fotoframe_boader, camera_height + 2 * fotoframe_boader))
 alpha_ = fotoframe[:, :, 3]
 fotoframe = fotoframe[:, :, :3]
@@ -44,8 +56,8 @@ while running:
     if k == 32:
         # Capture a photo
         timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        filename = f"captured_photo_{timestamp}.jpg"
-        cv2.imwrite(filename, canvas)
+        filename = storage_path/f"{timestamp}.jpg"
+        cv2.imwrite(filename.__str__(), canvas)
         cv2.imshow(imgwindow, flashimage )
         cv2.waitKey(60)
     elif k == 27:
