@@ -16,7 +16,7 @@ imgwindow = "fotobooth"
 event_name = "weddding" #defined the name where the images are stored
 frame_name = "frame.png" #the name of the custom frame
 
-script_path = Path(__file__)/".."
+script_path = Path(__file__).parent
 storage_path = script_path/event_name
 Path.mkdir(storage_path,exist_ok=True)
 frame_path = script_path/frame_name
