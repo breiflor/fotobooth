@@ -5,6 +5,8 @@ import numpy as np
 import datetime
 from pathlib import Path
 import pygame
+from GPIO_remote import GPIO_Remote
+
 
 pygame.init()
 
@@ -39,7 +41,25 @@ alpha = ((alpha_ / 255)-1)*-1
 
 flashimage = np.ones_like(fotoframe)*200
 
+
+
+def photo():
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename = storage_path / f"{timestamp}.jpg"
+    cv2.imwrite(filename.__str__(), canvas)
+    screen.fill((255, 255, 255))  # Set background to black
+    pygame.display.flip()
+    time.sleep(0.3)
+
+
 running = True
+remote_triggered = False
+
+def remote_trigger():
+    global remote_triggered
+    remote_triggered = True
+
+remote = GPIO_Remote(remote_trigger)
 
 while running:
     retval, image = camera.read()
@@ -50,19 +70,17 @@ while running:
     canvas[:, :, 2] = canvas[:, :, 2] * alpha
     canvas = canvas + fotoframe
 
-
+    if remote_triggered:
+        remote_triggered = False
+        photo()
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 # Capture a photo
-                timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                filename = storage_path / f"{timestamp}.jpg"
-                cv2.imwrite(filename.__str__(), canvas)
-                screen.fill((255, 255, 255))  # Set background to black
-                pygame.display.flip()
-                time.sleep(0.3)
+                photo()
             elif event.key == pygame.K_ESCAPE:
                 running = False
+
 
     frame = cv2.resize(canvas, (screen_width, screen_height))
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
@@ -75,3 +93,4 @@ while running:
 # Clean up
 pygame.quit()
 cv2.destroyAllWindows()
+remote.stop()
