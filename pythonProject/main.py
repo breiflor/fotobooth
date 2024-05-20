@@ -21,7 +21,7 @@ event_name = "weddding" #defined the name where the images are stored
 frame_name = "frame.png" #the name of the custom frame
 
 screen = pygame.display.set_mode((screen_width, screen_height),pygame.FULLSCREEN)
-
+pygame.mouse.set_visible(False)
 script_path = Path(__file__).parent
 storage_path = script_path/event_name
 Path.mkdir(storage_path,exist_ok=True)
