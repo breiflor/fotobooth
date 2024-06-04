@@ -80,6 +80,11 @@ while running:
                 photo()
             elif event.key == pygame.K_ESCAPE:
                 running = False
+            elif event.key in [1073741902,1073741899,98]:
+                photo()
+            else :
+                print(event.key)
+            
 
 
     frame = cv2.resize(canvas, (screen_width, screen_height))
