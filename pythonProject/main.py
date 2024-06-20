@@ -5,6 +5,7 @@ import numpy as np
 import datetime
 from pathlib import Path
 import pygame
+from numba import jit
 #from GPIO_remote import GPIO_Remote
 
 
@@ -43,7 +44,7 @@ flashimage = np.ones_like(fotoframe)*200
 
 
 
-def photo():
+def photo(canvas):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = storage_path / f"{timestamp}.jpg"
     cv2.imwrite(filename.__str__(), canvas)
@@ -60,35 +61,46 @@ def remote_trigger():
     remote_triggered = True
 
 #remote = GPIO_Remote(remote_trigger)
-canvas = np.zeros_like(fotoframe)
-while running:
-    retval, image = camera.read()
-    canvas[fotoframe_boader:(camera_height + fotoframe_boader),fotoframe_boader:(camera_width + fotoframe_boader)] = np.fliplr(image)
+
+
+@jit(nopython=True) # Set "nopython" mode for best performance, equivalent to @njit
+def processimage(_image):
+    canvas = np.zeros_like(fotoframe)
+    canvas[fotoframe_boader:(camera_height + fotoframe_boader),fotoframe_boader:(camera_width + fotoframe_boader)] = np.fliplr(_image)
     canvas[:,:,0] = canvas[:,:,0] * alpha
     canvas[:, :, 1] = canvas[:, :, 1] * alpha
     canvas[:, :, 2] = canvas[:, :, 2] * alpha
-    canvas = canvas + fotoframe
+    return canvas + fotoframe
 
-    if remote_triggered:
-        remote_triggered = False
-        photo()
+@jit(nopython=True) # Set "nopython" mode for best performance, equivalent to @njit
+def crop_frame(frame):
+    frame = np.rot90(frame)
+    return np.flipud(frame)
+
+
+while running:
+    #ret,image = camera.read() # do not merge due to typing info
+    canvas = processimage(camera.read()[1])
+    #no remote connected
+    #if remote_triggered:
+    #    remote_triggered = False
+    #    photo(canvas)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 # Capture a photo
-                photo()
+                photo(canvas)
             elif event.key == pygame.K_ESCAPE:
                 running = False
             elif event.key in [1073741903,1073741904,1073741902,1073741899,98]:
-                photo()
+                photo(canvas)
 
     frame = cv2.resize(canvas, (screen_width, screen_height))
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-    frame = np.rot90(frame)
-    frame = np.flipud(frame)
-    frame = pygame.surfarray.make_surface(frame)
+    frame = pygame.surfarray.make_surface(crop_frame(frame))
     screen.blit(frame, (0, 0))
     pygame.display.flip()
+    time.sleep(0.01)# creates a smoother experience :D
 
 # Clean up
 pygame.quit()
