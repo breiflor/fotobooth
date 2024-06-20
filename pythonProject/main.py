@@ -5,7 +5,7 @@ import numpy as np
 import datetime
 from pathlib import Path
 import pygame
-from GPIO_remote import GPIO_Remote
+#from GPIO_remote import GPIO_Remote
 
 
 pygame.init()
@@ -59,12 +59,11 @@ def remote_trigger():
     global remote_triggered
     remote_triggered = True
 
-remote = GPIO_Remote(remote_trigger)
-
+#remote = GPIO_Remote(remote_trigger)
+canvas = np.zeros_like(fotoframe)
 while running:
     retval, image = camera.read()
-    canvas = np.zeros_like(fotoframe)
-    canvas[fotoframe_boader:(camera_height + fotoframe_boader),fotoframe_boader:(camera_width + fotoframe_boader)] = image
+    canvas[fotoframe_boader:(camera_height + fotoframe_boader),fotoframe_boader:(camera_width + fotoframe_boader)] = np.fliplr(image)
     canvas[:,:,0] = canvas[:,:,0] * alpha
     canvas[:, :, 1] = canvas[:, :, 1] * alpha
     canvas[:, :, 2] = canvas[:, :, 2] * alpha
@@ -82,10 +81,6 @@ while running:
                 running = False
             elif event.key in [1073741903,1073741904,1073741902,1073741899,98]:
                 photo()
-            else :
-                print(event.key)
-            
-
 
     frame = cv2.resize(canvas, (screen_width, screen_height))
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
@@ -98,4 +93,4 @@ while running:
 # Clean up
 pygame.quit()
 cv2.destroyAllWindows()
-remote.stop()
+#remote.stop()
