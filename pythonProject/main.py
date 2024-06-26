@@ -18,7 +18,7 @@ screen_width, screen_height = 1920, 1080
 imgwindow = "fotobooth"
 
 
-event_name = "weddding" #defined the name where the images are stored
+event_name = "hannah29" #defined the name where the images are stored
 frame_name = "frame.png" #the name of the custom frame
 
 screen = pygame.display.set_mode((screen_width, screen_height),pygame.FULLSCREEN)
