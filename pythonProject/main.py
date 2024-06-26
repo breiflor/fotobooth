@@ -6,6 +6,7 @@ import datetime
 from pathlib import Path
 import pygame
 from numba import jit
+import random
 #from GPIO_remote import GPIO_Remote
 
 
@@ -46,7 +47,8 @@ flashimage = np.ones_like(fotoframe)*200
 
 def photo(canvas):
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    filename = storage_path / f"{timestamp}.jpg"
+    seed = int(random.random()*10000)
+    filename = storage_path / f"{timestamp}_{seed}.jpg"
     cv2.imwrite(filename.__str__(), canvas)
     screen.fill((255, 255, 255))  # Set background to black
     pygame.display.flip()
