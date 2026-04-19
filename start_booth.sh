@@ -3,10 +3,8 @@
 export XDG_SESSION_PATH=/org/freedesktop/DisplayManager/Session0
 export XDG_MENU_PREFIX=lxde-pi-
 export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
-export SSH_AUTH_SOCK=/tmp/ssh-XXXXXX9U5EQQ/agent.913
 export WLR_XWAYLAND=/usr/bin/xwayland-xauth
 export DESKTOP_SESSION=LXDE-pi-wayfire
-export SSH_AGENT_PID=983
 export NO_AT_BRIDGE=1
 export XCURSOR_SIZE=24
 export XDG_SEAT=seat0
