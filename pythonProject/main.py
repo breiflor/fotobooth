@@ -66,8 +66,9 @@ def remote_trigger():
 
 
 @jit(nopython=True) # Set "nopython" mode for best performance, equivalent to @njit
-def processimage(_image):
-    canvas = np.zeros_like(fotoframe)
+def processimage(_image, canvas):
+    # clear canvas
+    canvas[:] = 0
     canvas[fotoframe_boader:(camera_height + fotoframe_boader),fotoframe_boader:(camera_width + fotoframe_boader)] = np.fliplr(_image)
     canvas[:,:,0] = canvas[:,:,0] * alpha
     canvas[:, :, 1] = canvas[:, :, 1] * alpha
@@ -80,9 +81,11 @@ def crop_frame(frame):
     return np.flipud(frame)
 
 
+canvas_buffer = np.zeros_like(fotoframe)
+
 while running:
     #ret,image = camera.read() # do not merge due to typing info
-    canvas = processimage(camera.read()[1])
+    canvas = processimage(camera.read()[1], canvas_buffer)
     #no remote connected
     #if remote_triggered:
     #    remote_triggered = False
@@ -99,7 +102,8 @@ while running:
 
     frame = cv2.resize(canvas, (screen_width, screen_height))
     frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-    frame = pygame.surfarray.make_surface(crop_frame(frame))
+    frame = np.ascontiguousarray(crop_frame(frame))
+    frame = pygame.surfarray.make_surface(frame)
     screen.blit(frame, (0, 0))
     pygame.display.flip()
     time.sleep(0.01)# creates a smoother experience :D
