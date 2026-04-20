@@ -7,7 +7,6 @@ from pathlib import Path
 import pygame
 from numba import jit
 import random
-#from GPIO_remote import GPIO_Remote
 
 
 pygame.init()
@@ -56,13 +55,6 @@ def photo(canvas):
 
 
 running = True
-remote_triggered = False
-
-def remote_trigger():
-    global remote_triggered
-    remote_triggered = True
-
-#remote = GPIO_Remote(remote_trigger)
 
 
 @jit(nopython=True) # Set "nopython" mode for best performance, equivalent to @njit
@@ -86,10 +78,6 @@ canvas_buffer = np.zeros_like(fotoframe)
 while running:
     #ret,image = camera.read() # do not merge due to typing info
     canvas = processimage(camera.read()[1], canvas_buffer)
-    #no remote connected
-    #if remote_triggered:
-    #    remote_triggered = False
-    #    photo(canvas)
     for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
@@ -111,4 +99,3 @@ while running:
 # Clean up
 pygame.quit()
 cv2.destroyAllWindows()
-#remote.stop()
