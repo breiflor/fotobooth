@@ -83,32 +83,33 @@ def crop_frame(frame):
 
 canvas_buffer = np.zeros_like(fotoframe)
 
-while running:
-    #ret,image = camera.read() # do not merge due to typing info
-    canvas = processimage(camera.read()[1], canvas_buffer)
-    #no remote connected
-    #if remote_triggered:
-    #    remote_triggered = False
-    #    photo(canvas)
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                # Capture a photo
-                photo(canvas)
-            elif event.key == pygame.K_ESCAPE:
-                running = False
-            elif event.key in [1073741903,1073741904,1073741902,1073741899,98]:
-                photo(canvas)
+if __name__ == '__main__':
+    while running:
+        #ret,image = camera.read() # do not merge due to typing info
+        canvas = processimage(camera.read()[1], canvas_buffer)
+        #no remote connected
+        #if remote_triggered:
+        #    remote_triggered = False
+        #    photo(canvas)
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    # Capture a photo
+                    photo(canvas)
+                elif event.key == pygame.K_ESCAPE:
+                    running = False
+                elif event.key in [1073741903,1073741904,1073741902,1073741899,98]:
+                    photo(canvas)
 
-    frame = cv2.resize(canvas, (screen_width, screen_height))
-    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
-    frame = np.ascontiguousarray(crop_frame(frame))
-    frame = pygame.surfarray.make_surface(frame)
-    screen.blit(frame, (0, 0))
-    pygame.display.flip()
-    time.sleep(0.01)# creates a smoother experience :D
+        frame = cv2.resize(canvas, (screen_width, screen_height))
+        frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        frame = np.ascontiguousarray(crop_frame(frame))
+        frame = pygame.surfarray.make_surface(frame)
+        screen.blit(frame, (0, 0))
+        pygame.display.flip()
+        time.sleep(0.01)# creates a smoother experience :D
 
-# Clean up
-pygame.quit()
-cv2.destroyAllWindows()
-#remote.stop()
+    # Clean up
+    pygame.quit()
+    cv2.destroyAllWindows()
+    #remote.stop()
