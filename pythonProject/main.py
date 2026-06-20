@@ -16,7 +16,6 @@ camera_width = 1920
 camera_height = 1080
 fotoframe_boader = 100  # px
 screen_width, screen_height = 1920, 1080
-imgwindow = "fotobooth"
 
 
 event_name = "hannah29" #defined the name where the images are stored
