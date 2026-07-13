@@ -42,4 +42,4 @@ export WAYFIRE_CONFIG_FILE=/home/fotobox/.config/wayfire.ini
 
 cd /home/fotobox/fotobooth/pythonProject
 echo $XDG_RUNTIME_DIR
-sudo python main.py
+python3 main.py
