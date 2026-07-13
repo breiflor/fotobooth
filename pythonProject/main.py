@@ -82,6 +82,7 @@ def crop_frame(frame):
 
 
 canvas_buffer = np.zeros_like(fotoframe)
+clock = pygame.time.Clock()
 
 while running:
     #ret,image = camera.read() # do not merge due to typing info
@@ -106,7 +107,7 @@ while running:
     frame = pygame.surfarray.make_surface(frame)
     screen.blit(frame, (0, 0))
     pygame.display.flip()
-    time.sleep(0.01)# creates a smoother experience :D
+    clock.tick(60)# creates a smoother experience :D
 
 # Clean up
 pygame.quit()
